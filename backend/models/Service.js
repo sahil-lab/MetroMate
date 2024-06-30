@@ -1,4 +1,3 @@
-// backend/models/Service.js
 const mongoose = require('mongoose');
 
 const ServiceSchema = new mongoose.Schema({
@@ -8,12 +7,27 @@ const ServiceSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+  },
+  price: {
+    type: Number,
+  },
+  serviceProvider: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
-  date: {
-    type: Date,
-    default: Date.now,
+  location: {
+    type: {
+      type: String,
+      default: 'Point',
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
   },
 });
+
+ServiceSchema.index({ location: '2dsphere' });
 
 module.exports = mongoose.model('Service', ServiceSchema);

@@ -15,10 +15,22 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
+    phoneNumber: {
+        type: String,
+        required: true,
+    },
     isServiceProvider: {
         type: Boolean,
         default: false,
     },
+    isAdmin: {
+        type: Boolean,
+        default: false,
+    },
+    jwtSecret: {
+        type: String,
+        required: true,
+    }
 });
 
 module.exports = mongoose.model('User', UserSchema);

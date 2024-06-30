@@ -1,18 +1,32 @@
+// backend/middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
-const config = require('config');
+const Config = require('../models/Config');
+const logger = require('../logger');
 
-module.exports = function (req, res, next) {
-    const token = req.header('x-auth-token');
+// Function to fetch JWT secret from the database
+const fetchJWTSecret = async () => {
+  const config = await Config.findOne({ key: 'jwtSecret' });
+  if (config) {
+    return config.value;
+  } else {
+    throw new Error('JWT secret not found');
+  }
+};
 
-    if (!token) {
-        return res.status(401).json({ msg: 'No token, authorization denied' });
-    }
+module.exports = async function (req, res, next) {
+  const token = req.header('x-auth-token');
 
-    try {
-        const decoded = jwt.verify(token, config.get('jwtSecret'));
-        req.user = decoded.user;
-        next();
-    } catch (err) {
-        res.status(401).json({ msg: 'Token is not valid' });
-    }
+  if (!token) {
+    return res.status(401).json({ msg: 'No token, authorization denied' });
+  }
+
+  try {
+    const jwtSecret = await fetchJWTSecret();
+    const decoded = jwt.verify(token, jwtSecret);
+    req.user = decoded.user;
+    next();
+  } catch (err) {
+    logger.error('Token is not valid');
+    res.status(401).json({ msg: 'Token is not valid' });
+  }
 };

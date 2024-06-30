@@ -1,15 +1,14 @@
-// backend/models/Order.js
 const mongoose = require('mongoose');
 
 const OrderSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
   service: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Service',
+    required: true,
+  },
+  serviceProvider: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   details: {
@@ -18,7 +17,11 @@ const OrderSchema = new mongoose.Schema({
   },
   comments: {
     type: String,
-    required: false,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
   },
   date: {
     type: Date,

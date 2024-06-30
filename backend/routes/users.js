@@ -1,7 +1,41 @@
-// backend/routes/users.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User'); // Ensure this path is correct
+const auth = require('../middleware/authMiddleware');
+
+// Save FCM token
+router.post('/fcm-token', auth, async (req, res) => {
+  const { token } = req.body;
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    user.fcmToken = token;
+    await user.save();
+    res.json({ msg: 'FCM token saved successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+// Update FCM token
+router.post('/update-fcm-token', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    user.fcmToken = req.body.fcmToken;
+    await user.save();
+    res.json({ msg: 'FCM token updated' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
 
 // Get all users
 router.get('/', async (req, res) => {
