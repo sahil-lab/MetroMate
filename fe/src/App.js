@@ -1,5 +1,3 @@
-// src/App.js
-
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
@@ -21,6 +19,7 @@ import PlaceOrder from './pages/PlaceOrder';
 import { getAuthToken } from './utils/auth';
 import AdminRegister from './pages/AdminRegister';
 import axios from 'axios';
+import AdminDashboard from './pages/AdminDashboard';
 
 const App = () => {
   useEffect(() => {
@@ -45,9 +44,17 @@ const App = () => {
     }
   }, []);
 
-  const PrivateRoute = ({ element: Element }) => {
+  const PrivateRoute = ({ element: Element, isAdminRoute = false }) => {
     const token = getAuthToken();
-    return token ? <Element /> : <Navigate to="/login" />;
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    
+    if (token) {
+      if (isAdminRoute && !isAdmin) {
+        return <Navigate to="/dashboard" />;
+      }
+      return <Element />;
+    }
+    return <Navigate to="/login" />;
   };
 
   return (
@@ -63,6 +70,7 @@ const App = () => {
               <Route path="/myorders" element={<PrivateRoute element={MyOrders} />} />
               <Route path="/reviews" element={<PrivateRoute element={Reviews} />} />
               <Route path="/chatbot" element={<Chatbot />} />
+              <Route path="/admin-dashboard" element={<PrivateRoute element={AdminDashboard} isAdminRoute={true} />} />
               <Route path="/admin-login" element={<AdminLogin />} />
               <Route path="/admin-register" element={<AdminRegister />} />
               <Route path="/appointments" element={<PrivateRoute element={Appointments} />} />
