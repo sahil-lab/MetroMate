@@ -27,8 +27,12 @@ const Login = () => {
             const body = JSON.stringify({ email, password });
             const res = await axios.post('http://localhost:5000/api/auth/login', body, config);
             setAuthToken(res.data.token); // Store token in localStorage
-            console.log(res.data);
-            navigate('/dashboard'); // Redirect to dashboard or any protected route
+            localStorage.setItem('isAdmin', res.data.isAdmin); // Store the admin flag
+            if (res.data.isAdmin) {
+                navigate('/admin-dashboard'); // Redirect to admin dashboard
+            } else {
+                navigate('/dashboard'); // Redirect to user dashboard
+            }
         } catch (err) {
             console.error(err.response.data);
             setErrors([err.response.data]);

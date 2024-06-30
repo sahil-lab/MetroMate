@@ -12,11 +12,12 @@ const router = express.Router();
 const fetchJWTSecret = async () => {
     const config = await Config.findOne({ key: 'jwtSecret' });
     if (config) {
-      return config.value;
+        return config.value;
     } else {
-      throw new Error('JWT secret not found');
+        throw new Error('JWT secret not found');
     }
-  };
+};
+
 // Register User
 router.post('/register', [
     body('name').not().isEmpty(),
@@ -30,7 +31,7 @@ router.post('/register', [
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password, phoneNumber } = req.body;
+    const { name, email, password, phoneNumber, isAdmin } = req.body;
 
     try {
         let user = await User.findOne({ email });
@@ -46,6 +47,7 @@ router.post('/register', [
             email,
             password,
             phoneNumber,
+            isAdmin: isAdmin || false,
             jwtSecret, // Save the JWT secret in the user document
         });
 
@@ -63,7 +65,7 @@ router.post('/register', [
         jwt.sign(payload, jwtSecret, { expiresIn: '1h' }, (err, token) => {
             if (err) throw err;
             logger.info('User registered successfully', { user: user.id });
-            res.json({ token });
+            res.json({ token, isAdmin: user.isAdmin });
         });
     } catch (err) {
         logger.error('Server error: ', err.message);
@@ -97,20 +99,18 @@ router.post('/login', [
             return res.status(400).json({ msg: 'Invalid Credentials' });
         }
 
-     
+        const jwtSecret = await fetchJWTSecret();
+        const payload = {
+            user: {
+                id: user.id,
+            },
+        };
 
-       const jwtSecret = await fetchJWTSecret();
-const payload = {
-  user: {
-    id: user.id,
-  },
-};
-
-jwt.sign(payload, jwtSecret, { expiresIn: '1h' }, (err, token) => {
-  if (err) throw err;
-  logger.info('User authenticated successfully', { user: user.id });
-  res.json({ token });
-});
+        jwt.sign(payload, jwtSecret, { expiresIn: '1h' }, (err, token) => {
+            if (err) throw err;
+            logger.info('User authenticated successfully', { user: user.id });
+            res.json({ token, isAdmin: user.isAdmin });
+        });
     } catch (err) {
         logger.error('Server error: ', err.message);
         res.status(500).send('Server Error');
