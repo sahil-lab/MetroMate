@@ -1,0 +1,80 @@
+body {
+  background: linear-gradient(135deg, #74ebd5 0%, #acb6e5 100%);
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  max-width: 400px;
+  padding: 40px;
+  background-color: #f0f4f8;
+  border-radius: 16px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+h4 {
+  color: #0d47a1;
+  margin-bottom: 20px;
+}
+
+.MuiTextField-root {
+  margin: 12px 0;
+  width: 100%;
+  background-color: #e0e7ff !important;
+  border-radius: 8px;
+}
+
+.MuiInputBase-root {
+  background-color: #e0e7ff !important;
+  border-radius: 8px;
+}
+
+.MuiButton-root {
+  width: 100%;
+  background: linear-gradient(135deg, #42a5f5 0%, #0d47a1 100%);
+  color: white;
+  padding: 12px;
+  margin: 12px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.MuiButton-root:hover {
+  background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+}
+
+.MuiFormControlLabel-root {
+  margin: 12px 0;
+  width: 100%;
+  text-align: left;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+.alert {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f44336;
+  color: white;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.alert ul {
+  padding-left: 20px;
+}
+
+.alert li {
+  margin-bottom: 5px;
+}
